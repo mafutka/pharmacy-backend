@@ -16,6 +16,10 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/api/user", authRoutes);
 app.use("/api/shop", shopRoutes);
+app.use((err, req, res, next) => {
+  console.error(err.message);
+  res.status(500).json({ message: err.message });
+});
 
 app.get("/", (req, res) => {
   res.send("API is working");
