@@ -5,6 +5,15 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+    brand: {
+    type: String,
+    required: true,
+  },
+
+  stock: {
+  type: Number,
+  default: 0,
+},
 
   price: {
     type: Number,
@@ -12,6 +21,10 @@ const productSchema = new mongoose.Schema({
   },
 
   category: String,
+
+    image: {
+    type: String,
+  },
 
   shopId: {
     type: mongoose.Schema.Types.ObjectId,

@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import authRoutes from "./src/routes/authRoutes.js";
 import shopRoutes from "./src/routes/shopRoutes.js"
-
+import statisticsRoutes from "./src/routes/statisticsRoutes.js"
 dotenv.config();
 
 const app = express();
@@ -16,6 +16,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/api/user", authRoutes);
 app.use("/api/shop", shopRoutes);
+app.use("/api/statistics", statisticsRoutes);
 app.use((err, req, res, next) => {
   console.error(err.message);
   res.status(500).json({ message: err.message });

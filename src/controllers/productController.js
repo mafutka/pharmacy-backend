@@ -1,4 +1,6 @@
 import * as productService from "../services/productService.js";
+import Product from "../models/product.js"
+import { productSchema } from "../validation/productValidation.js";
 
 export const getProducts = async (req, res) => {
   try {
@@ -12,11 +14,32 @@ export const getProducts = async (req, res) => {
 
 export const addProduct = async (req, res) => {
   try {
-    const { shopId } = req.params;
-    const product = await productService.createProduct(shopId, req.body);
+    const { error } = productSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+
+    const { name, price, category, brand, stock } = req.body;
+
+    const imageUrl = req.file
+      ? `/uploads/${req.file.filename}`
+      : null;
+
+    const product = await Product.create({
+      name,
+      brand,
+      price,
+      category,
+      stock,
+      image: imageUrl,
+      shopId: req.params.shopId,
+    });
+
     res.json(product);
   } catch (err) {
-    res.status(500).json({ message: "Error creating product" });
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -31,21 +54,31 @@ export const getOneProduct = async (req, res) => {
 
 export const editProduct = async (req, res) => {
   try {
-    const updated = await productService.updateProduct(
+    const updateData = { ...req.body };
+
+    if (req.file) {
+      updateData.image = `/uploads/${req.file.filename}`;
+    }
+
+    const updated = await Product.findByIdAndUpdate(
       req.params.productId,
-      req.body
+      updateData,
+      { new: true }
     );
+
     res.json(updated);
-  } catch {
-    res.status(500).json({ message: "Error updating" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 };
 
 export const removeProduct = async (req, res) => {
   try {
-    await productService.deleteProduct(req.params.productId);
+    await Product.findByIdAndDelete(req.params.productId);
     res.json({ message: "Deleted" });
-  } catch {
-    res.status(500).json({ message: "Error deleting" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 };

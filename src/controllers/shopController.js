@@ -14,12 +14,16 @@ export const createShop = async (req, res) => {
     );
 
     res.json(shop);
-  } catch {
-    res.status(500).json({ message: "Server error" });
+  } catch (err) {
+  if (err.code === 11000) {
+    return res.status(400).json({ message: "Email already exists" });
   }
+
+  console.error(err);
+  res.status(500).json({ message: err.message });
+}
 };
 
-// 📄 GET ONE
 export const getShop = async (req, res) => {
   try {
     const shop = await shopService.getShopById(req.params.shopId);
@@ -47,3 +51,4 @@ export const updateShop = async (req, res) => {
     res.status(500).json({ message: "Error updating" });
   }
 };
+

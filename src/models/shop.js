@@ -50,7 +50,7 @@ const shopSchema = new mongoose.Schema({
   },
 
   image: {
-    type: String, // URL логотипа
+    type: String, 
   },
 
   createdAt: {
@@ -58,10 +58,9 @@ const shopSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-shopSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+shopSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 export default mongoose.model("Shop", shopSchema);
