@@ -1,4 +1,5 @@
 import * as shopService from "../services/shopService.js";
+import Shop from "../models/shop.js";
 import { shopSchema } from "../validation/shopValidation.js";
 
 export const createShop = async (req, res) => {
@@ -10,7 +11,8 @@ export const createShop = async (req, res) => {
 
     const shop = await shopService.createShopService(
       req.body,
-      req.file
+      req.file,
+      req.user.id
     );
 
     res.json(shop);
@@ -27,6 +29,20 @@ export const createShop = async (req, res) => {
 export const getShop = async (req, res) => {
   try {
     const shop = await shopService.getShopById(req.params.shopId);
+    res.json(shop);
+  } catch {
+    res.status(500).json({ message: "Error" });
+  }
+};
+
+export const getMyShop = async (req, res) => {
+  try {
+    const shop = await Shop.findOne({ user: req.user.id });
+
+    if (!shop) {
+      return res.status(404).json({ message: "No shop" });
+    }
+
     res.json(shop);
   } catch {
     res.status(500).json({ message: "Error" });

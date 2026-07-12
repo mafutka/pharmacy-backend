@@ -2,46 +2,13 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 const shopSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-
-  owner: {
-    type: String,
-    required: true,
-  },
-
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-
-  phone: {
-    type: String,
-    required: true,
-  },
-
-  address: {
-    type: String,
-    required: true,
-  },
-
-  city: {
-    type: String,
-    required: true,
-  },
-
-  zip: {
-    type: String,
-    required: true,
-  },
-
-  password: {
-    type: String,
-    required: true,
-  },
+  name: String,
+  owner: String,
+  email: { type: String, unique: true },
+  phone: String,
+  address: String,
+  city: String,
+  zip: String,
 
   hasDelivery: {
     type: String,
@@ -49,15 +16,14 @@ const shopSchema = new mongoose.Schema({
     default: "no",
   },
 
-  image: {
-    type: String, 
-  },
+  image: String,
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-});
+}, { timestamps: true });
 shopSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 

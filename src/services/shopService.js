@@ -6,6 +6,7 @@ export const createShopService = async (data, file) => {
   const shop = await Shop.create({
     ...data,
     image: logoUrl,
+    user: userId, 
   });
 
   return shop;
