@@ -1,31 +1,45 @@
-import express from "express";
-import { upload } from "../middlewares/upload.js";
-import { authMiddleware } from "../middlewares/authMiddleware.js";
+import express from "express"
+import { upload } from "../middlewares/upload.js"
+import { authMiddleware } from "../middlewares/authMiddleware.js"
 import {
   createShop,
   getShop,
   updateShop,
-} from "../controllers/shopController.js";
+  getMyShop,
+} from "../controllers/shopController.js"
 import {
   getProducts,
   addProduct,
   getOneProduct,
   editProduct,
   removeProduct,
-} from "../controllers/productController.js";
+} from "../controllers/productController.js"
 
+const router = express.Router()
 
-const router = express.Router();
+router.post("/create", authMiddleware, upload.single("logo"), createShop)
+router.get("/:shopId", authMiddleware, getShop)
+router.put("/:shopId/update", authMiddleware, upload.single("logo"), updateShop)
+router.get("/my", authMiddleware, getMyShop)
 
-router.post("/create", authMiddleware, upload.single("logo"), createShop);
-router.get("/:shopId", authMiddleware, getShop);
-router.put("/:shopId/update", authMiddleware, upload.single("logo"), updateShop);
-router.get("/my", authMiddleware, getMyShop);
+router.get("/:shopId/product", authMiddleware, getProducts)
+router.post(
+  "/:shopId/product/add",
+  authMiddleware,
+  upload.single("image"),
+  addProduct,
+)
+router.get("/:shopId/product/:productId", authMiddleware, getOneProduct)
+router.put(
+  "/:shopId/product/:productId/edit",
+  authMiddleware,
+  upload.single("image"),
+  editProduct,
+)
+router.delete(
+  "/:shopId/product/:productId/delete",
+  authMiddleware,
+  removeProduct,
+)
 
-router.get("/:shopId/product", authMiddleware, getProducts);
-router.post("/:shopId/product/add", authMiddleware, upload.single("image"), addProduct);
-router.get("/:shopId/product/:productId", authMiddleware, getOneProduct);
-router.put("/:shopId/product/:productId/edit", authMiddleware, upload.single("image"), editProduct);
-router.delete("/:shopId/product/:productId/delete", authMiddleware, removeProduct);
-
-export default router;
+export default router
