@@ -1,12 +1,12 @@
 import Shop from "../models/shop.js";
 
-export const createShopService = async (data, file) => {
+export const createShopService = async (data, file, userId) => {
   const logoUrl = file ? `/uploads/${file.filename}` : null;
 
   const shop = await Shop.create({
     ...data,
     image: logoUrl,
-    user: userId, 
+    user: userId,
   });
 
   return shop;

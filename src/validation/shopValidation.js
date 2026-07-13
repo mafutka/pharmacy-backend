@@ -8,6 +8,5 @@ export const shopSchema = Joi.object({
   address: Joi.string().required(),
   city: Joi.string().required(),
   zip: Joi.string().required(),
-  password: Joi.string().min(6).required(),
   hasDelivery: Joi.string().valid("yes", "no"),
 });
