@@ -22,22 +22,17 @@ router.get("/my", authMiddleware, getMyShop);
 router.get("/:shopId", authMiddleware, getShop)
 router.put("/:shopId/update", authMiddleware, upload.single("logo"), updateShop)
 
-router.get("/:shopId/product", authMiddleware, getProducts)
-router.post(
-  "/:shopId/product/add",
-  authMiddleware,
-  upload.single("image"),
-  addProduct,
-)
-router.get("/:shopId/product/:productId", authMiddleware, getOneProduct)
+router.get("/:shopId/products", authMiddleware, getProducts)
+router.post("/:shopId/products", authMiddleware, upload.single("image"), addProduct)
+router.get("/:shopId/products/:productId", authMiddleware, getOneProduct)
 router.put(
-  "/:shopId/product/:productId/edit",
+  "/:shopId/products/:productId/edit",
   authMiddleware,
   upload.single("image"),
   editProduct,
 )
 router.delete(
-  "/:shopId/product/:productId/delete",
+  "/:shopId/products/:productId/delete",
   authMiddleware,
   removeProduct,
 )

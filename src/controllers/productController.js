@@ -1,12 +1,14 @@
 import * as productService from "../services/productService.js";
-import Product from "../models/product.js"
 import { productSchema } from "../validation/productValidation.js";
 
 export const getProducts = async (req, res) => {
   try {
     const { shopId } = req.params;
-    const products = await productService.getProductsByShop(shopId);
-    res.json(products);
+    const page = Number(req.query.page) || 1;
+
+    const data = await productService.getProductsByShop(shopId, page);
+
+    res.json(data);
   } catch (err) {
     res.status(500).json({ message: "Error fetching products" });
   }
@@ -26,15 +28,14 @@ export const addProduct = async (req, res) => {
       ? `/uploads/${req.file.filename}`
       : null;
 
-    const product = await Product.create({
-      name,
-      brand,
-      price,
-      category,
-      stock,
-      image: imageUrl,
-      shopId: req.params.shopId,
-    });
+   const product = await productService.createProduct(req.params.shopId, {
+  name,
+  brand,
+  price,
+  category,
+  stock,
+  image: imageUrl,
+});
 
     res.json(product);
   } catch (err) {
@@ -46,6 +47,9 @@ export const addProduct = async (req, res) => {
 export const getOneProduct = async (req, res) => {
   try {
     const product = await productService.getProductById(req.params.productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
     res.json(product);
   } catch {
     res.status(500).json({ message: "Error" });
@@ -60,11 +64,10 @@ export const editProduct = async (req, res) => {
       updateData.image = `/uploads/${req.file.filename}`;
     }
 
-    const updated = await Product.findByIdAndUpdate(
-      req.params.productId,
-      updateData,
-      { new: true }
-    );
+  const updated = await productService.updateProduct(
+  req.params.productId,
+  updateData
+);
 
     res.json(updated);
   } catch (err) {
@@ -75,7 +78,7 @@ export const editProduct = async (req, res) => {
 
 export const removeProduct = async (req, res) => {
   try {
-    await Product.findByIdAndDelete(req.params.productId);
+    await productService.deleteProduct(req.params.productId);
     res.json({ message: "Deleted" });
   } catch (err) {
     console.error(err);
