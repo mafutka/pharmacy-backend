@@ -1,6 +1,22 @@
 import * as productService from "../services/productService.js";
 import { productSchema } from "../validation/productValidation.js";
 
+export const getAllProducts = async (req, res) => {
+  try {
+    const { page = 1, category, search } = req.query;
+
+    const data = await productService.getAllProducts({
+      page,
+      category,
+      search,
+    });
+
+    res.json(data);
+  } catch {
+    res.status(500).json({ message: "Error" });
+  }
+};
+
 export const getProducts = async (req, res) => {
   try {
     const { shopId } = req.params;

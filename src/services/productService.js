@@ -1,5 +1,27 @@
 import Product from "../models/product.js";
 
+export const getAllProducts = async ({
+  page = 1,
+  limit = 10,
+  category,
+  search,
+}) => {
+  const query = {};
+
+  if (category) query.category = category;
+  if (search) query.name = { $regex: search, $options: "i" };
+
+  const products = await Product.find(query)
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+  const total = await Product.countDocuments(query);
+
+  return {
+    products,
+    totalPages: Math.ceil(total / limit),
+  };
+};
 export const getProductsByShop = async (shopId, page = 1, limit = 10) => {
   const products = await Product.find({ shopId })
     .skip((page - 1) * limit)
