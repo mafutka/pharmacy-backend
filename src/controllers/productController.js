@@ -1,103 +1,106 @@
-import * as productService from "../services/productService.js";
-import { productSchema } from "../validation/productValidation.js";
+import * as productService from "../services/productService.js"
+import { productSchema } from "../validation/productValidation.js"
 
 export const getAllProducts = async (req, res) => {
   try {
-    const { page = 1, category, search } = req.query;
+    const { page = 1, category, search } = req.query
 
     const data = await productService.getAllProducts({
       page,
       category,
       search,
-    });
+    })
 
-    res.json(data);
+    res.json(data)
   } catch {
-    res.status(500).json({ message: "Error" });
+    res.status(500).json({ message: "Error" })
   }
-};
+}
 
 export const getProducts = async (req, res) => {
   try {
-    const { shopId } = req.params;
-    const page = Number(req.query.page) || 1;
+    const { shopId } = req.params
+    const page = Number(req.query.page) || 1
 
-    const data = await productService.getProductsByShop(shopId, page);
+    const data = await productService.getProductsByShop(shopId, page)
 
-    res.json(data);
+    res.json(data)
   } catch (err) {
-    res.status(500).json({ message: "Error fetching products" });
+    res.status(500).json({ message: "Error fetching products" })
   }
-};
+}
 
 export const addProduct = async (req, res) => {
   try {
-    const { error } = productSchema.validate(req.body);
+    req.body.price = Number(req.body.price)
+    req.body.stock = Number(req.body.stock)
+
+    const { error } = productSchema.validate(req.body)
 
     if (error) {
-      return res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message })
     }
 
-    const { name, price, category, brand, stock } = req.body;
+    const { name, price, category, brand, stock } = req.body
 
-    const imageUrl = req.file
+   const imageUrl = req.file
       ? `/uploads/${req.file.filename}`
       : null;
 
-   const product = await productService.createProduct(req.params.shopId, {
-  name,
-  brand,
-  price,
-  category,
-  stock,
-  image: imageUrl,
-});
+    const product = await productService.createProduct(req.params.shopId, {
+      name,
+      brand,
+      price,
+      category,
+      stock,
+      image: imageUrl,
+    })
 
-    res.json(product);
+    res.json(product)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
+    console.error(err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 export const getOneProduct = async (req, res) => {
   try {
-    const product = await productService.getProductById(req.params.productId);
+    const product = await productService.getProductById(req.params.productId)
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "Product not found" })
     }
-    res.json(product);
+    res.json(product)
   } catch {
-    res.status(500).json({ message: "Error" });
+    res.status(500).json({ message: "Error" })
   }
-};
+}
 
 export const editProduct = async (req, res) => {
   try {
-    const updateData = { ...req.body };
+    const updateData = { ...req.body }
 
     if (req.file) {
-      updateData.image = `/uploads/${req.file.filename}`;
+      updateData.image = `/uploads/${req.file.filename}`
     }
 
-  const updated = await productService.updateProduct(
-  req.params.productId,
-  updateData
-);
+    const updated = await productService.updateProduct(
+      req.params.productId,
+      updateData,
+    )
 
-    res.json(updated);
+    res.json(updated)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
+    console.error(err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 export const removeProduct = async (req, res) => {
   try {
-    await productService.deleteProduct(req.params.productId);
-    res.json({ message: "Deleted" });
+    await productService.deleteProduct(req.params.productId)
+    res.json({ message: "Deleted" })
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
+    console.error(err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
