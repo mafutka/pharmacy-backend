@@ -1,10 +1,10 @@
 import * as shopService from "../services/shopService.js";
 import Shop from "../models/shop.js";
-import { shopSchema } from "../validation/shopValidation.js";
+import { shopSchema, createShopSchema, updateShopSchema } from "../validation/shopValidation.js";
 
 export const createShop = async (req, res) => {
   try {
-    const { error } = shopSchema.validate(req.body);
+    const { error } = createShopSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -29,6 +29,9 @@ export const createShop = async (req, res) => {
 export const getShop = async (req, res) => {
   try {
     const shop = await shopService.getShopById(req.params.shopId);
+    if (!shop) {
+  return res.status(404).json({ message: "Shop not found" })
+}
     res.json(shop);
   } catch {
     res.status(500).json({ message: "Error" });
@@ -51,20 +54,22 @@ export const getMyShop = async (req, res) => {
 
 export const updateShop = async (req, res) => {
   try {
-    const { error } = shopSchema.validate(req.body);
+    const { error } = updateShopSchema.validate(req.body)
+
     if (error) {
-      return res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message })
     }
 
     const updated = await shopService.updateShop(
       req.params.shopId,
       req.body,
-      req.file
-    );
+      req.file,
+      req.user.id
+    )
 
-    res.json(updated);
-  } catch {
-    res.status(500).json({ message: "Error updating" });
+    res.json(updated)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: err.message })
   }
-};
-
+}

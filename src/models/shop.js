@@ -16,7 +16,7 @@ const shopSchema = new mongoose.Schema({
     default: "no",
   },
 
-  image: String,
+  logo: String,
 
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -24,9 +24,5 @@ const shopSchema = new mongoose.Schema({
     required: true,
   },
 }, { timestamps: true });
-shopSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
 
-  this.password = await bcrypt.hash(this.password, 10);
-});
 export default mongoose.model("Shop", shopSchema);
