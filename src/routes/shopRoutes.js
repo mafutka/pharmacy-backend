@@ -20,7 +20,7 @@ const router = express.Router()
 router.post("/create", authMiddleware, upload.single("logo"), createShop)
 router.get("/my", authMiddleware, getMyShop);
 router.get("/:shopId", authMiddleware, getShop)
-router.put("/update", authMiddleware, upload.single("logo"), updateShop)
+router.put("/:shopId/update", authMiddleware, upload.single("logo"), updateShop)
 
 router.get("/:shopId/products", authMiddleware, getProducts)
 router.post("/:shopId/products", authMiddleware, upload.single("image"), addProduct)

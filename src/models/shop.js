@@ -10,11 +10,10 @@ const shopSchema = new mongoose.Schema({
   city: String,
   zip: String,
 
-  hasDelivery: {
-    type: String,
-    enum: ["yes", "no"],
-    default: "no",
-  },
+hasDelivery: {
+  type: Boolean,
+  default: false,
+},
 
   logo: String,
 

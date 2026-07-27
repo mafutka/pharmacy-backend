@@ -28,7 +28,10 @@ export const createShop = async (req, res) => {
 
 export const getShop = async (req, res) => {
   try {
-    const shop = await shopService.getShopById(req.params.shopId);
+    const shop = await shopService.getShopById(
+  req.params.shopId,
+  req.user.id
+);
     if (!shop) {
   return res.status(404).json({ message: "Shop not found" })
 }
