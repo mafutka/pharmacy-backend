@@ -1,9 +1,17 @@
-import Joi from "joi";
+import Joi from "joi"
 
 export const productSchema = Joi.object({
   name: Joi.string().required(),
+
   brand: Joi.string().required(),
+
   price: Joi.number().required(),
+
   category: Joi.string().allow(""),
-  stock: Joi.number().min(0).required()
-});
+
+  stock: Joi.number()
+    .min(0)
+    .required(),
+
+  description: Joi.string().allow(""),
+})

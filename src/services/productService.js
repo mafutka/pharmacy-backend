@@ -22,19 +22,24 @@ export const getAllProducts = async ({
     totalPages: Math.ceil(total / limit),
   };
 };
-export const getProductsByShop = async (shopId, page = 1, limit = 10) => {
-  const products = await Product.find({ shopId })
-    .skip((page - 1) * limit)
-    .limit(limit);
+export const getProductsByShop = async (
+  shopId,
+  page = 1,
+  limit = 10
+) => {
+  const skip = (page - 1) * limit
 
-  const total = await Product.countDocuments({ shopId });
+  const products = await Product.find({ shopId })
+    .skip(skip)
+    .limit(limit)
+
+  const total = await Product.countDocuments({ shopId })
 
   return {
     products,
     totalPages: Math.ceil(total / limit),
-  };
-};
-
+  }
+}
 export const createProduct = async (shopId, data) => {
   return await Product.create({
     ...data,
@@ -47,7 +52,7 @@ export const getProductById = async (productId) => {
 };
 
 export const updateProduct = async (productId, data) => {
-  return await Product.findByIdAndUpdate(productId, data, { new: true });
+  return await Product.findByIdAndUpdate(productId, data, { new: true,  runValidators: true, });
 };
 
 export const deleteProduct = async (productId) => {

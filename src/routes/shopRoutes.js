@@ -10,7 +10,6 @@ import {
 import {
   getProducts,
   addProduct,
-  getOneProduct,
   editProduct,
   removeProduct,
 } from "../controllers/productController.js"
@@ -18,13 +17,17 @@ import {
 const router = express.Router()
 
 router.post("/create", authMiddleware, upload.single("logo"), createShop)
-router.get("/my", authMiddleware, getMyShop);
+router.get("/my", authMiddleware, getMyShop)
 router.get("/:shopId", authMiddleware, getShop)
 router.put("/:shopId/update", authMiddleware, upload.single("logo"), updateShop)
 
 router.get("/:shopId/products", authMiddleware, getProducts)
-router.post("/:shopId/products", authMiddleware, upload.single("image"), addProduct)
-router.get("/:shopId/products/:productId", authMiddleware, getOneProduct)
+router.post(
+  "/:shopId/products",
+  authMiddleware,
+  upload.single("image"),
+  addProduct,
+)
 router.put(
   "/:shopId/products/:productId/edit",
   authMiddleware,
