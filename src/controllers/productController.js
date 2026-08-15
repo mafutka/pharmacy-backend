@@ -266,3 +266,34 @@ export const removeProduct = async (req, res) => {
     })
   }
 }
+
+export const addProductToShop = async (req, res) => {
+  try {
+    const { shopId, productId } = req.params
+
+    const shop = await checkShopOwnership(
+      shopId,
+      req.user.id
+    )
+
+    if (!shop) {
+      return res.status(403).json({
+        message: "You don't have access to this shop",
+      })
+    }
+
+    const product =
+      await productService.addProductToShop(
+        shopId,
+        productId
+      )
+
+    res.status(201).json(product)
+  } catch (err) {
+    console.error(err)
+
+    res.status(400).json({
+      message: err.message,
+    })
+  }
+}

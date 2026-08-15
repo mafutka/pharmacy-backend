@@ -58,3 +58,37 @@ export const updateProduct = async (productId, data) => {
 export const deleteProduct = async (productId) => {
   return await Product.findByIdAndDelete(productId);
 };
+
+export const addProductToShop = async (
+  shopId,
+  productId
+) => {
+  const product = await Product.findById(productId)
+
+  if (!product) {
+    throw new Error("Product not found")
+  }
+
+  const alreadyExists = await Product.findOne({
+    shopId,
+    name: product.name,
+    brand: product.brand,
+  })
+
+  if (alreadyExists) {
+    throw new Error("Product already exists in this shop")
+  }
+
+  const newProduct = await Product.create({
+    name: product.name,
+    brand: product.brand,
+    price: product.price,
+    category: product.category,
+    stock: product.stock,
+    image: product.image,
+    description: product.description,
+    shopId,
+  })
+
+  return newProduct
+}

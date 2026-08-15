@@ -12,6 +12,7 @@ import {
   addProduct,
   editProduct,
   removeProduct,
+  addProductToShop,
 } from "../controllers/productController.js"
 
 const router = express.Router()
@@ -38,6 +39,12 @@ router.delete(
   "/:shopId/products/:productId/delete",
   authMiddleware,
   removeProduct,
+)
+
+router.post(
+  "/:shopId/products/:productId/add",
+  authMiddleware,
+  addProductToShop
 )
 
 export default router
