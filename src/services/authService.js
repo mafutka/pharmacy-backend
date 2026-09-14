@@ -23,10 +23,20 @@ export const loginUser = async (data) => {
   const { email, password } = data;
 
   const user = await User.findOne({ email });
-  if (!user) throw new Error("User doesnt exist");
+
+  if (!user) {
+    const error = new Error("Invalid email or password");
+    error.status = 401;
+    throw error;
+  }
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid credentials");
+
+  if (!isMatch) {
+    const error = new Error("Invalid email or password");
+    error.status = 401;
+    throw error;
+  }
 
   return user;
 };

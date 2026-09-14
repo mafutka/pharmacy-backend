@@ -7,6 +7,8 @@ import authRoutes from "./src/routes/authRoutes.js";
 import shopRoutes from "./src/routes/shopRoutes.js"
 import productRoutes from "./src/routes/productRoutes.js"
 import statisticsRoutes from "./src/routes/statisticsRoutes.js"
+import { errorHandler } from "./src/middlewares/errorHandler.js";
+
 dotenv.config();
 
 const app = express();
@@ -20,10 +22,7 @@ app.use("/api/user", authRoutes);
 app.use("/api/shop", shopRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/statistics", statisticsRoutes);
-app.use((err, req, res, next) => {
-  console.error(err.message);
-  res.status(500).json({ message: err.message });
-});
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.send("API is working");
